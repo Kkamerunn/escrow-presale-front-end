@@ -20,11 +20,11 @@ const TokenBalance = ({
 
   return (
     <div className="w-full py-4 md:py-6 px-3 md:px-4 flex items-center justify-between gap-3 bg-gray/5 tracking-tight rounded-l-md rounded-r-md">
-      <div className="flex flex-col">
-        <span className="text-bg-logo text-[14px] md:text-sm font-medium">Your $ESCROW balance</span>
-        <span className="text-bg-logo text-[14px] md:text-sm font-medium">{balance} $ESCROW</span>
+      <div className="flex justify-between w-full">
+        <p className="text-bg-logo text-[14px] md:text-sm font-medium">Your $ESCROW balance</p>
+        <p className="text-bg-logo text-[14px] md:text-sm font-medium">{balance} $ESCROW</p>
       </div>
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <button
           type="button"
           className="px-3 py-2 text-xs md:text-sm border border-bg-logo text-bg-logo rounded-full hover:bg-bg-logo hover:text-black duration-200 disabled:opacity-50"
@@ -33,7 +33,7 @@ const TokenBalance = ({
         >
           {loading ? 'Refreshing...' : 'Refresh'}
         </button>
-        {/* {onClaim && (
+        {onClaim && (
           <button
             type="button"
             className={`px-3 py-2 text-xs md:text-sm rounded-full duration-200 ${
@@ -46,8 +46,8 @@ const TokenBalance = ({
           >
             {claiming ? 'Claiming...' : claimLocked ? 'Claim Locked' : 'Claim Tokens'}
           </button>
-        )} */}
-      </div>
+        )} 
+      </div>*/}
     </div>
   );
 };

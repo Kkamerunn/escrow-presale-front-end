@@ -489,7 +489,8 @@ useEffect(() => {
     setShowCountryModal(false);
     const code = selectedCountry === 'US' ? 'US' : 'Other';
     // Ya no lanzamos el SDK directamente — solo mostramos la pantalla
-    await startVerification(code);
+    const resp = await startVerification(code);
+    console.log("🌍 Lucas response verification:", resp);
   };
 
 
@@ -677,6 +678,10 @@ const handleClaimTokens = async () => {
   }
 };
 
+useEffect(() => {
+  console.log("🔄Lucas Verification status changed:", isVerified);
+}, [isVerified]);
+
 
  return (
    <>
@@ -689,9 +694,15 @@ const handleClaimTokens = async () => {
             setShowVerificationScreen(false);
             if (address) checkVerificationStatus(address);
           }}
+          onVerified={() => {
+            setIsVerified(true);
+            setVerificationStatus('verified');
+            setShowVerificationScreen(false);
+          }}
         />
       </div>
     )}
+
 
    <form id="presale-form" className="relative max-w-[720px] py-4 px-4 md:px-6 md:py-8 mb-4 rounded-md border border-body-text overflow-hidden">
     <FormTitle />
@@ -823,7 +834,7 @@ const handleClaimTokens = async () => {
     )}
 
 
-     {(isConnected && isVerified) && <TermsCheckbox />}
+     {isVerified && <TermsCheckbox />}
      <img id="bg-form" src="/img/form-bg.jpg" className="absolute opacity-15 w-full h-full inset-0 -z-50" alt="" />
    </form>
     {/* <button

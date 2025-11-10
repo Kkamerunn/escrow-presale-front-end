@@ -7,9 +7,11 @@ interface VerificationScreenProps {
   userId: string;
   countryCode: 'US' | 'Other';
   onClose: () => void;
+  onVerified?: () => void;
 }
 
-const VerificationScreen = ({ userId, countryCode, onClose }: VerificationScreenProps) => {
+
+const VerificationScreen = ({ userId, countryCode, onClose, onVerified }: VerificationScreenProps) => {
   const [loading, setLoading] = useState(true);
   const [, setStarted] = useState(false);
   const [visible, setVisible] = useState(false); // fade-in / fade-out control
@@ -56,7 +58,9 @@ const VerificationScreen = ({ userId, countryCode, onClose }: VerificationScreen
           })
           // @ts-expect-error Sumsub SDK event not included in typings
           .on("idCheck.onFinish", () => {
-            console.log("✅ Verificación completada");
+            console.log("✅ Lucas Verificación completada");
+            if (onVerified) onVerified(); // <- notifica al PresaleForm
+
             // 🔹 Fade-out antes de cerrar
             setVisible(false);
             setTimeout(() => onClose(), 300);
