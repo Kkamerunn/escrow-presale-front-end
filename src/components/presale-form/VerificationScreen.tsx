@@ -103,7 +103,7 @@ const VerificationScreen = ({ userId, countryCode, onClose }: VerificationScreen
       {/* 🧱 Contenedor del SDK */}
       <div
         id="sumsub-websdk-container"
-        className={`relative w-full max-w-[480px] h-[600px] rounded-lg overflow-hidden transition-all duration-300 ${
+        className={`relative w-full max-w-[480px] rounded-lg overflow-hidden transition-all duration-300 ${
           loading ? "opacity-0 scale-95" : "opacity-100 scale-100"
         }`}
       ></div>

@@ -33,7 +33,7 @@ const TokenBalance = ({
         >
           {loading ? 'Refreshing...' : 'Refresh'}
         </button>
-        {onClaim && (
+        {/* {onClaim && (
           <button
             type="button"
             className={`px-3 py-2 text-xs md:text-sm rounded-full duration-200 ${
@@ -46,7 +46,7 @@ const TokenBalance = ({
           >
             {claiming ? 'Claiming...' : claimLocked ? 'Claim Locked' : 'Claim Tokens'}
           </button>
-        )}
+        )} */}
       </div>
     </div>
   );
