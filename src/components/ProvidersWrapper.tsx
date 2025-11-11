@@ -2,7 +2,7 @@ import { darkTheme, getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rai
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { PropsWithChildren } from "react";
 import { WagmiProvider } from "wagmi";
-import { base, mainnet, sepolia } from "wagmi/chains";
+import { mainnet } from "wagmi/chains";
 
 const queryClient = new QueryClient({
   defaultOptions: {
