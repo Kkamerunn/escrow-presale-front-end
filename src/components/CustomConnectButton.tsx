@@ -1,8 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const CustomConnectButton = () => {
   const [isConnecting, setIsConnecting] = useState(false);
+
+  // 👀 Hack para ocultar la wallet de Rainbow
+  useEffect(() => {
+    const hideRainbowWallet = () => {
+      const rainbowOption = document.querySelector(
+        '[data-testid="rk-wallet-option-rainbow"]'
+      ) as HTMLElement | null;
+      if (rainbowOption && !rainbowOption.classList.contains('hidden')) {
+        rainbowOption.classList.add('hidden');
+        console.log('🌈 Rainbow wallet oculta exitosamente');
+      }
+    };
+
+    // 🧠 Usamos un observer para detectar el modal cuando aparece
+    const observer = new MutationObserver(() => hideRainbowWallet());
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+
+      // Fallback por si acaso
+      const interval = setInterval(hideRainbowWallet, 1000);
+
+      return () => {
+        observer.disconnect();
+        clearInterval(interval);
+      };
+    }, []);
 
   return (
     <ConnectButton.Custom>
