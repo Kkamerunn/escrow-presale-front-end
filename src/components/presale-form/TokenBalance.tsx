@@ -1,22 +1,15 @@
 type Props = {
   balance: string;
-  loading: boolean;
-  onRefresh: () => void;
+  loading?: boolean;
+  onRefresh?: () => void;
   canClaim?: boolean;
   claiming?: boolean;
   onClaim?: () => void;
 };
 
 const TokenBalance = ({
-  balance,
-  loading,
-  onRefresh,
-  canClaim = false,
-  claiming = false,
-  onClaim,
+  balance
 }: Props) => {
-  const claimDisabled = claiming || loading;
-  const claimLocked = !canClaim;
 
   return (
     <div className="w-full py-4 md:py-6 px-3 md:px-4 flex items-center justify-between gap-3 bg-gray/5 tracking-tight rounded-l-md rounded-r-md">
