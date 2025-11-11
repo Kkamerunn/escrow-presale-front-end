@@ -148,9 +148,6 @@ export type Currency = {
 };
 
 
-// Contract configuration
-// SEPOLIA TESTNET
-const PRESALE_CONTRACT_ADDRESS = import.meta.env.VITE_PRESALE_CONTRACT_ADDRESS || "0x...PRESALE_CONTRACT_ADDRESS";
 // MAINNET: const PRESALE_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_PRESALE_CONTRACT_ADDRESS || "0x...MAINNET_PRESALE_ADDRESS";
 
 const PRESALE_ABI = [
@@ -201,6 +198,10 @@ const PresaleForm = () => {
 
   const { address, isConnected } = useAccount();
  const { data: walletClient } = useWalletClient();
+
+ // Contract configuration
+// SEPOLIA TESTNET
+const PRESALE_CONTRACT_ADDRESS = import.meta.env.VITE_PRESALE_CONTRACT_ADDRESS || "0x...PRESALE_CONTRACT_ADDRESS";
 
  const amount = amountInput ? Number(amountInput) : 0;
 
