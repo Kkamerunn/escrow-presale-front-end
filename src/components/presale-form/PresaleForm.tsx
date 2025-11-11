@@ -181,8 +181,8 @@ const ERC20_ABI = [
 
 const PresaleForm = () => {
  const [loading, setLoading] = useState(false);
- const [isVerified, setIsVerified] = useState(false);
- const [, setVerificationStatus] = useState('pending'); // 'pending', 'verified', 'rejected'
+ const [isVerified, setIsVerified] = useState(true);
+ const [, setVerificationStatus] = useState('verified'); // 'pending', 'verified', 'rejected'
  const [selectedCurrency, setSelectedCurrency] = useState('ETH');
  const [amountInput, setAmountInput] = useState("");
  const [userBalance, setUserBalance] = useState("0");
@@ -435,20 +435,20 @@ const refreshEscrowBalance = useCallback(async () => {
  // Check verification status when wallet connects or address changes
 useEffect(() => {
   if (isConnected && address) {
-    checkVerificationStatus(address);
+    setIsVerified(true);
+    setVerificationStatus('verified');
     fetchUserBalance(address, selectedCurrencyData);
     refreshEscrowBalance();
 
     const pollInterval = setInterval(() => {
-      checkVerificationStatus(address);
       fetchUserBalance(address, selectedCurrencyData);
       refreshEscrowBalance();
     }, 120000);
 
     return () => clearInterval(pollInterval);
   } else {
-    setIsVerified(false);
-    setVerificationStatus('pending');
+    setIsVerified(true);
+    setVerificationStatus('verified');
     setUserBalance("0");
     setEscrowBalance("0");
   }
@@ -514,14 +514,15 @@ useEffect(() => {
     const signer = await browserProvider.getSigner();
 
    const isNative = selectedCurrencyData.isNative;
-   const paymentToken = isNative ? NATIVE_ADDRESS : selectedCurrencyData.address;
-
-   const numericBalance = parseFloat(userBalance || "0");
-   if (numericBalance < amount) {
-     setLoading(false);
-     alert(`Insufficient ${selectedCurrencyData.symbol} balance to cover the selected purchase amount.`);
-     return;
-   }
+    const paymentToken = isNative ? NATIVE_ADDRESS : selectedCurrencyData.address;
+    console.log("🧮 Purchase debug -> isNative:", isNative);
+    console.log("🧮 Purchase debug -> selected currency:", {
+      symbol: selectedCurrencyData.symbol,
+      address: selectedCurrencyData.address,
+      isActive: selectedCurrencyData.isActive,
+      decimals: selectedCurrencyData.decimals,
+    });
+    console.log("🧮 Purchase debug -> resolved payment token:", paymentToken);
 
     console.log("🔗 Payment token:", paymentToken);
 
@@ -564,6 +565,14 @@ useEffect(() => {
 
     const { voucher, signature } = data;
     console.log("🎫 Voucher received:", { voucher, signature });
+    console.log("📊 Voucher debug -> buyer:", voucher?.buyer);
+    console.log("📊 Voucher debug -> beneficiary:", voucher?.beneficiary);
+    console.log("📊 Voucher debug -> presale:", voucher?.presale);
+    console.log("📊 Voucher debug -> paymentToken:", voucher?.paymentToken);
+    console.log("📊 Voucher debug -> usdLimit:", voucher?.usdLimit);
+    console.log("📊 Voucher debug -> nonce:", voucher?.nonce);
+    console.log("📊 Voucher debug -> deadline:", voucher?.deadline);
+    console.log("✍️ Signature:", signature);
 
     // ---- Step 5: Contract interaction ----
     const presaleContract = new Contract(
@@ -589,6 +598,8 @@ useEffect(() => {
       // Native purchase
       const ethAmount = parseEther(amountInput);
       console.log("💰 Buying with native:", ethAmount.toString());
+      console.log("💰 Native buy -> token price USD:", selectedCurrencyData.priceUsd);
+      console.log("💰 Native buy -> USD amount:", usdAmountValue);
 
       tx = await presaleContract.buyWithNativeVoucher(
         beneficiary,
@@ -774,26 +785,55 @@ useEffect(() => {
      />
 
 
-     {/* 🔹 Verification/Buy button */}
-     <button
-       type="button"
-       disabled={loading || !isConnected}
-       onClick={isVerified ? handleBuyTokens : handleVerifyClick}
-       className={`w-full py-3 md:py-4 mt-4 font-medium border text-sm md:text-base tracking-tight rounded-full cursor-pointer duration-200 ${
-         isVerified
-           ? 'border-green-500 text-green-500 hover:bg-green-500 hover:text-black'
-           : 'border-bg-logo text-bg-logo hover:text-black hover:border-bg-logo hover:bg-bg-logo'
-       } ${!isConnected ? 'opacity-50 cursor-not-allowed' : ''}`}
-     >
-       {loading
-         ? (isVerified ? "Processing Purchase..." : "Launching Verification...")
-         : !isConnected
-           ? "Connect Wallet First"
-           : isVerified
-             ? "Buy Tokens Now"
-             : "Get verified to buy"
-       }
-     </button>
+    {/* 🔹 Verification CTA */}
+    {isConnected && !isVerified && (
+      <button
+        type="button"
+        onClick={handleVerifyClick}
+        disabled={loading}
+        className={`w-full py-3 md:py-4 mt-4 font-medium border text-sm md:text-base tracking-tight rounded-full duration-200 ${
+          loading
+            ? 'border-bg-logo text-bg-logo cursor-wait opacity-70'
+            : 'border-bg-logo text-bg-logo hover:text-black hover:border-bg-logo hover:bg-bg-logo cursor-pointer'
+        }`}
+      >
+        {loading ? "Launching verification..." : "Verify to enable purchases"}
+      </button>
+    )}
+
+    {/* 🔹 Buy button */}
+    <button
+      type="button"
+      disabled={
+        !isConnected ||
+        loading ||
+        !selectedCurrencyData.isActive ||
+        amount <= 0
+      }
+      onClick={() => {
+        if (!isConnected || loading) return;
+        handleBuyTokens();
+      }}
+      className={`w-full py-3 md:py-4 mt-3 font-medium border text-sm md:text-base tracking-tight rounded-full duration-200 ${
+        !isConnected
+          ? 'border-body-text text-body-text cursor-not-allowed opacity-50'
+          : !selectedCurrencyData.isActive
+            ? 'border-body-text text-body-text cursor-not-allowed opacity-60'
+            : loading
+              ? 'border-green-500 text-green-500 cursor-wait opacity-70'
+              : 'border-green-500 text-green-500 hover:bg-green-500 hover:text-black cursor-pointer'
+      }`}
+    >
+      {!isConnected
+        ? "Connect wallet to continue"
+        : !selectedCurrencyData.isActive
+          ? `${selectedCurrencyData.symbol} purchases unavailable`
+          : amount <= 0
+            ? "Enter an amount to buy"
+            : loading
+              ? `Processing ${selectedCurrencyData.symbol} purchase...`
+              : `Buy with ${selectedCurrencyData.symbol}`}
+    </button>
 
 
      {/* 🔹 Sumsub Web SDK iframe container */}
