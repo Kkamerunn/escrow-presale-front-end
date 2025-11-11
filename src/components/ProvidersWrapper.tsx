@@ -6,21 +6,7 @@ import type { PropsWithChildren } from "react";
 import { WagmiProvider } from "wagmi";
 import { mainnet,sepolia } from "wagmi/chains";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 1,
-    },
-  },
-});
 
-const config = getDefaultConfig({
-  appName: "Escrow Presale",
-  projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || "YOUR_PROJECT_ID",
-  chains: [mainnet,sepolia],
-  ssr: false,
-});
 
 const ProvidersWrapper = ({ children }: PropsWithChildren) => {
 
