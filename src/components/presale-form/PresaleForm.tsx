@@ -8,7 +8,6 @@ import CurrencyInput from "./CurrencyInput";
 import CurrencyRadio from "./CurrencyRadio";
 import CurrentBalance from "./CurrentBalance";
 import FormTitle from "./FormTitle";
-import GasFee from "./GasFee";
 import SupplyStatus from "./SupplyStatus";
 import TermsCheckbox from "./TermsCheckbox";
 import TokenBalance from "./TokenBalance";
@@ -762,8 +761,6 @@ useEffect(() => {
        value={amountInput}
        onChange={(value) => setAmountInput(value)}
      />
-     <GasFee />
-
 
      <TokenPrice
         title="You will receive"

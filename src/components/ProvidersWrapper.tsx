@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
 const config = getDefaultConfig({
   appName: "Escrow Presale",
   projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || "YOUR_PROJECT_ID",
-  chains: [sepolia, mainnet, base],
+  chains: [mainnet],
   ssr: false,
 });
 
