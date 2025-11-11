@@ -53,18 +53,27 @@ const VerificationScreen = ({ userId, countryCode, onClose, onVerified }: Verifi
             console.log("✅ SDK listo");
             setLoading(false);
           })
-          .on("idCheck.onStepCompleted", (payload) => {
-            console.log("➡️ Paso completado:", payload);
+          .on("idCheck.onApplicantStatusChanged", (payload: any) => {
+            console.log("Status changed:", payload);
+            if (payload.reviewResult?.reviewAnswer === "GREEN") {
+              console.log("VERIFIED SUCCESSFULLY");
+              onVerified?.();
+              setVisible(false);
+              setTimeout(() => onClose(), 300);
+            }
           })
-          // @ts-expect-error Sumsub SDK event not included in typings
-          .on("idCheck.onFinish", () => {
-            console.log("✅ Lucas Verificación completada");
-            if (onVerified) onVerified(); // <- notifica al PresaleForm
+          // .on("idCheck.onStepCompleted", (payload) => {
+          //   console.log("➡️ Paso completado:", payload);
+          // })
+          // // @ts-expect-error Sumsub SDK event not included in typings
+          // .on("idCheck.onFinish", () => {
+          //   console.log("✅ Lucas Verificación completada");
+          //   if (onVerified) onVerified(); // <- notifica al PresaleForm
 
-            // 🔹 Fade-out antes de cerrar
-            setVisible(false);
-            setTimeout(() => onClose(), 300);
-          })
+          //   // 🔹 Fade-out antes de cerrar
+          //   setVisible(false);
+          //   setTimeout(() => onClose(), 300);
+          // })
           .on("idCheck.onError", (error) => {
             console.error("❌ Error en Sumsub:", error);
             alert("Verification failed, please try again.");
